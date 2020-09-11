@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lfj.mapper.ArchivesInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lfj.entity.ArchivesInfo">
+        <id column="id_" property="id" />
+        <result column="title_" property="title" />
+        <result column="document_code_" property="documentCode" />
+        <result column="relation_document_code_" property="relationDocumentCode" />
+        <result column="part_code_" property="partCode" />
+        <result column="part_year_" property="partYear" />
+        <result column="archives_key_words_" property="archivesKeyWords" />
+        <result column="page_number_" property="pageNumber" />
+        <result column="archives_type_" property="archivesType" />
+        <result column="host_department_" property="hostDepartment" />
+        <result column="belong_catalog_id_" property="belongCatalogId" />
+        <result column="belong_catalog_name_" property="belongCatalogName" />
+        <result column="storage_period_" property="storagePeriod" />
+        <result column="level_" property="level" />
+        <result column="issue_time_" property="issueTime" />
+        <result column="responsible_name_" property="responsibleName" />
+        <result column="send_time_" property="sendTime" />
+        <result column="files_" property="files" />
+        <result column="look_users_" property="lookUsers" />
+        <result column="source_" property="source" />
+        <result column="archives_status_" property="archivesStatus" />
+        <result column="destroy_user_id_" property="destroyUserId" />
+        <result column="destroy_user_name_" property="destroyUserName" />
+        <result column="destroy_time_" property="destroyTime" />
+        <result column="is_delete_" property="isDelete" />
+        <result column="is_destroy_" property="isDestroy" />
+        <result column="create_time_" property="createTime" />
+        <result column="create_user_id_" property="createUserId" />
+        <result column="last_update_user_id_" property="lastUpdateUserId" />
+        <result column="last_update_time_" property="lastUpdateTime" />
+        <result column="remark_" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_, title_, document_code_, relation_document_code_, part_code_, part_year_, archives_key_words_, page_number_, archives_type_, host_department_, belong_catalog_id_, belong_catalog_name_, storage_period_, level_, issue_time_, responsible_name_, send_time_, files_, look_users_, source_, archives_status_, destroy_user_id_, destroy_user_name_, destroy_time_, is_delete_, is_destroy_, create_time_, create_user_id_, last_update_user_id_, last_update_time_, remark_
+    </sql>
+
+</mapper>
