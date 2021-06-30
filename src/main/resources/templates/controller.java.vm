@@ -3,24 +3,20 @@ package ${package.Controller};
 import ${package.Service}.${table.serviceName};
 import ${package.Entity}.${entity};
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lfj.util.response.JsonReturn;
+import com.cqysxx.ype.common.EnumConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.cqysxx.smartOffice.common.UserHandle;
-import com.github.pagehelper.PageHelper;
+import org.springframework.web.bind.annotation.*;
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import com.cqysxx.smartOffice.util.CheckUtils;
-import com.cqysxx.smartOffice.common.Msg;
-
+import com.cqysxx.ype.common.ResultModel;
+import org.springframework.util.StringUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Date;
 
 /**
  * <p>
@@ -28,71 +24,78 @@ import java.util.List;
  * </p>
  *
  * @author ${author}
- * @since ${date} ${TIME}
+ * @since ${date}
  */
 @RestController
 @RequestMapping("/${table.entityPath}")
+@Api(tags = "${table.entityPath}接口")
 public class  ${table.controllerName} {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(${table.controllerName}.class);
 
     @Autowired
     public ${table.serviceName} ${table.entityPath}Service;
 
 
-    @Autowired
-    private UserHandle userHandle;
-
-
     /**
     * 分页查询${entity}列表
-    * @param vo 查询条件对象
-    * @return com.cqysxx.smartOffice.common.Msg
-    * @date ${date} ${TIME}
+    * @param  ${table.entityPath} 查询条件对象
+    * @return com.cqysxx.ype.common.ResultModel
+    * @date ${date}
     * @author lfj
     */
-    @RequestMapping("list${entity}")
-    public Msg list${entity}(@RequestBody @Valid ${entity} ${table.entityPath}) {
-
-        if (pageNum != null && pageSize != null) {
-            try {
-                Page<${entity}> page = ${table.entityPath}Service.page(new Page<>(pageNum, pageSize));
-                return JsonReturn.buildSuccess(page, "操作成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return JsonReturn.buildFailure("操作失败" + e.getMessage());
-            }
-        }
+    @PostMapping("list${entity}")
+    @ApiOperation(value = "分页查询列表")
+    public ResultModel list${entity}(@RequestBody @Valid ${entity} ${table.entityPath}) {
         try {
-            Page<${entity}> page = ${table.entityPath}Service.page(new Page<>());
-            return JsonReturn.buildSuccess(page, "操作成功");
+
+
+
+            PageInfo<${entity}> list = null;
+            return new ResultModel<>(null);
         } catch (Exception e) {
-            e.printStackTrace();
-            return JsonReturn.buildFailure("操作失败" + e.getMessage());
+            return ResultModel.fail(EnumConstants.FAIL,  e.getMessage());
         }
     }
 
+
     /**
-     * 保存
+     * 查询详情
+     *
+     * @param id 查找对象的主键ID
+     * @return com.cqysxx.ype.common.ResultModel
+     * @date ${date}
+     */
+    @GetMapping("getDetail")
+    @ApiOperation(value = "查询详情")
+    public ResultModel getDetail(@RequestParam(value = "id") String id) {
+        try {
+
+
+
+            return new ResultModel<>(null);
+        } catch (Exception e) {
+            return ResultModel.fail(EnumConstants.FAIL,  e.getMessage());
+        }
+    }
+
+
+    /**
+     * 新增
      * @param ${table.entityPath} 保存的对象
-     * @return com.cqysxx.smartOffice.common.Msg
-     * @date ${date} ${TIME}
+     * @return com.cqysxx.ype.common.ResultModel
+     * @date ${date}
      */
     @PostMapping("/save")
-    public Msg save(${entity} ${table.entityPath}) {
-        if (${table.entityPath}.getId() != null){
-            try {
-                ${table.entityPath}Service.updateById(${table.entityPath});
-                return JsonReturn.buildSuccess(${table.entityPath}, "操作成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return JsonReturn.buildFailure("操作失败" + e.getMessage());
-            }
-        }
+    @ApiOperation(value = "新增")
+    public ResultModel save(@RequestBody @Valid ${entity} ${table.entityPath}) {
         try {
-            ${table.entityPath}Service.save(${table.entityPath});
-            return JsonReturn.buildSuccess(${table.entityPath}, "操作成功");
+
+
+
+            return ResultModel.success();
         } catch (Exception e) {
-            e.printStackTrace();
-            return JsonReturn.buildFailure("操作失败" + e.getMessage());
+            return ResultModel.fail(EnumConstants.FAIL,  e.getMessage());
         }
 
     }
@@ -100,60 +103,43 @@ public class  ${table.controllerName} {
     /**
      * 修改
      * @param ${table.entityPath} 修改的对象
-     * @return JsonReturn
+     * @return com.cqysxx.ype.common.ResultModel
+     * @date ${date}
      */
+    @ApiOperation(value = "修改")
     @PostMapping("/update")
-    public Msg update(${entity} ${table.entityPath}) {
-        if (${table.entityPath}.getId() != null){
-            try {
-                    ${table.entityPath}Service.updateById(${table.entityPath});
-                return JsonReturn.buildSuccess(${table.entityPath}, "操作成功");
-            } catch (Exception e) {
-                e.printStackTrace();
-                return JsonReturn.buildFailure("操作失败" + e.getMessage());
+    public ResultModel update(@RequestBody @Valid ${entity} ${table.entityPath}) {
+        try {
+            String id = ${table.entityPath}.getId();
+            if(StringUtils.isEmpty(id)) {
+                return ResultModel.fail(EnumConstants.FAIL, "id不能为空");
             }
-        }
-        try {
-                ${table.entityPath}Service.save(${table.entityPath});
-            return JsonReturn.buildSuccess(${table.entityPath}, "操作成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return JsonReturn.buildFailure("操作失败" + e.getMessage());
-        }
 
+
+            return ResultModel.success();
+        } catch (Exception e) {
+            return ResultModel.fail(EnumConstants.FAIL,  e.getMessage());
+        }
     }
 
-    /**批量删除 支持POST GET
-     * @param ids Long 类型 List 集合
-     * @return JsonReturn
-     */
-    @RequestMapping("remove")
-    public Msg delete(@RequestBody List<Long> ids) {
-        try {
-            ${table.entityPath}Service.removeByIds(ids);
-            return JsonReturn.buildSuccess(ids, "操作成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return JsonReturn.buildFailure("操作失败" + e.getMessage());
-        }
-    }
 
     /**
-     * 查询一个  支持POST GET
-     *
-     * @param id 查找对象的主键ID
-     * @return JsonReturn
+     * 删除/批量删除
+     * @param ids String 类型 List 集合
+     * @return com.cqysxx.ype.common.ResultModel
+     * @date ${date}
      */
-    @RequestMapping("getDetail")
-    public Msg findOne(Long id) {
+    @ApiOperation(value = "删除/批量删除")
+    @PostMapping("remove")
+    public ResultModel delete(@RequestParam(value = "ids") List<String> ids) {
         try {
-            ${entity} ${table.entityPath} = ${table.entityPath}Service.getById(id);
-            return JsonReturn.buildSuccess(${table.entityPath}, "操作成功");
+
+
+
+            return ResultModel.success();
         } catch (Exception e) {
-            e.printStackTrace();
-            return JsonReturn.buildFailure("操作失败" + e.getMessage());
+            return ResultModel.fail(EnumConstants.FAIL,  e.getMessage());
         }
     }
-
 
 }

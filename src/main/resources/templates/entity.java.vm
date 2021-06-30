@@ -2,8 +2,6 @@ package ${package.Entity};
 
 #foreach($pkg in ${table.importPackages})
 import ${pkg};
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableField;
 #end
 #if(${swagger2})
 import io.swagger.annotations.ApiModel;
@@ -16,9 +14,7 @@ import lombok.experimental.Accessors;
 #end
 
 /**
- * <p>
  * $!{table.comment}
- * </p>
  *
  * @author ${author}
  * @since ${date}
@@ -43,11 +39,10 @@ public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}
 #elseif(${activeRecord})
 public class ${entity} extends Model<${entity}> {
 #else
-public class ${entity} + "Entity" implements Serializable {
+public class ${entity} implements Serializable {
 #end
 
 #if(${entitySerialVersionUID})
-    private static final long serialVersionUID=1L;
 #end
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
@@ -66,7 +61,7 @@ public class ${entity} + "Entity" implements Serializable {
 #end
 #if(${field.keyFlag})
 ## 主键
-    @TableId(value = "${field.name}")
+##@TableId(value = "${field.name}")
 ## 普通字段
 #end
 ## 乐观锁注解
@@ -79,7 +74,7 @@ public class ${entity} + "Entity" implements Serializable {
 #end
   #if(!${field.keyFlag})
   ## 主键
-  @TableField(value = "${field.name}")
+  ##@TableField(value = "${field.name}")
   ## 普通字段
   #end
   private ${field.propertyType} ${field.propertyName};

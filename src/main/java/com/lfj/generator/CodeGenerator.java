@@ -25,7 +25,7 @@ public class CodeGenerator {
 
     public static void main(String[] args) {
         //项目根目录  不可修改
-        String projectPath = System.getProperty("user.dir");
+        String projectPath = "H:\\workspace\\rc-oa";
         log.info("项目根路径"+projectPath);
         //用来获取Mybatis-Plus.properties文件的配置信息
         ResourceBundle rb = ResourceBundle.getBundle("genreator");
@@ -53,14 +53,17 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setDbType(DbType.MYSQL);
+        dsc.setDbType(DbType.DM);
         dsc.setTypeConvert(new MySqlTypeConvert());
         //注意Mysql 驱动版本问题 我这为8版本
-        dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+        dsc.setDriverName(rb.getString("jdbc.Driver"));
         dsc.setUsername(rb.getString("jdbc.username"));
         dsc.setPassword(rb.getString("jdbc.password"));
         dsc.setUrl(rb.getString("jdbc.url"));
         mpg.setDataSource(dsc);
+
+        // mapper.xml 路径
+        String mapperPackage = rb.getString("mapper.package");
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
@@ -69,7 +72,10 @@ public class CodeGenerator {
         /** 表名生成策略*/
         strategy.setNaming(NamingStrategy.underline_to_camel);
         /** 需要生成的表*/
-        strategy.setInclude(new String[]{"archives_info"});
+        String[] arr = new String[]{
+                "meeting_main"
+        };
+        strategy.setInclude(arr);
         mpg.setStrategy(strategy);
 
         // 包配置
@@ -79,7 +85,7 @@ public class CodeGenerator {
         pc.setService("service");
         pc.setServiceImpl("service.impl");
         pc.setEntity("entity");
-        pc.setMapper("mapper");
+        pc.setMapper("dao");
         mpg.setPackageInfo(pc);
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 【可无】
@@ -89,7 +95,7 @@ public class CodeGenerator {
             }
         };
 
-        List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
+        List<FileOutConfig> focList = new ArrayList<>(16);
 
         // 调整 xml 生成目录演示
         focList.add(new FileOutConfig("/templates/mapper.xml.vm") {
@@ -97,7 +103,7 @@ public class CodeGenerator {
             public String outputFile(TableInfo tableInfo) {
 
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return projectPath + "/src/main/resources/com/lfj/mapper/" + tableInfo.getEntityName()
+                return projectPath + "/src/main/resources/mapper/" + mapperPackage
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
@@ -111,12 +117,12 @@ public class CodeGenerator {
         });*/
 
         //调整 entity 生成目录
-        focList.add(new FileOutConfig("/templates/entity.java.vm") {
-            @Override
-            public String outputFile(TableInfo tableInfo) {
-                return projectPath+ "/src/main/java/com/lfj/entity/" + tableInfo.getEntityName() + "Entity" + ".java";
-            }
-        });
+//        focList.add(new FileOutConfig("/templates/entity.java.vm") {
+//            @Override
+//            public String outputFile(TableInfo tableInfo) {
+//                return projectPath+ "/src/main/java/com/lfj/entity/" + tableInfo.getEntityName() + ".java";
+//            }
+//        });
 
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
